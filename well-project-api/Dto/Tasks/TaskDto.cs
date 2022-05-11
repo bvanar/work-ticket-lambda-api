@@ -13,5 +13,7 @@ namespace well_project_api.Dto.Tasks
         public int TaskOrder { get; set; }
         public bool Completed { get; set; }        
         public DateTime? CompletedDate { get; set; } = null;
+        public int? CompletedByUserId { get; set; }
+        public string CompletedByUserName { get; set; }
     }
 }

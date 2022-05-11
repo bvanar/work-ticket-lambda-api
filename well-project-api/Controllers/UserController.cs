@@ -20,11 +20,12 @@ namespace well_project_api.Controllers
         }        
         
         [HttpGet]
-        public async Task<JsonResult> GetUsers()
+        [Route("company/{companyId}")]
+        public async Task<JsonResult> GetUsersByCompanyId(int companyId)
         {
             try
             {
-                var users = await _userService.GetUsers();
+                var users = await _userService.GetUsersByCompanyId(companyId);
                 return Json(ApiResponseDto.SuccessResponse(users));
             } catch(Exception ex)
             {
@@ -32,13 +33,29 @@ namespace well_project_api.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<JsonResult> RegisterUser(UserDto user)
+        [HttpGet]
+        [Route("job/{jobId}")]
+        public async Task<JsonResult> GetUsersByJobId(int jobId)
         {
             try
             {
-                var newUser = await _userService.RegisterUser(user);
-                return Json(ApiResponseDto.SuccessResponse(newUser));
+                var users = await _userService.GetUsersByJobId(jobId);
+                return Json(ApiResponseDto.SuccessResponse(users));
+            }
+            catch (Exception ex)
+            {
+                return Json(ApiResponseDto.FailureResponse(ex.Message));
+            }
+        }
+
+        [HttpPut]
+        [Route("invite")]
+        public async Task<JsonResult> InviteUser(InviteUserRequestDto invite)
+        {
+            try
+            {
+                await _userService.InviteUser(invite);
+                return Json(ApiResponseDto.SuccessResponse(true));
             }
             catch (Exception ex)
             {
@@ -98,6 +115,20 @@ namespace well_project_api.Controllers
             {
                 var updatedUser = await _userService.UpdateUser(user);
                 return Json(ApiResponseDto.SuccessResponse(updatedUser));
+            }
+            catch (Exception ex)
+            {
+                return Json(ApiResponseDto.FailureResponse(ex.Message));
+            }
+        }
+        
+        [HttpPut]
+        public async Task<JsonResult> RegisterUser(RegisterUserDto registerUser)
+        {
+            try
+            {
+                await _userService.RegisterUser(registerUser);
+                return Json(ApiResponseDto.SuccessResponse(true));
             }
             catch (Exception ex)
             {

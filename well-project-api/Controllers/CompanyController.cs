@@ -19,12 +19,13 @@ namespace well_project_api.Controllers
             _companyService = companyService;
         }
 
-        [HttpGet]        
-        public async Task<JsonResult> List()
+        [HttpGet]
+        [Route("{userId}")]
+        public async Task<JsonResult> List(int userId)
         {
             try
             {
-                var companies = await _companyService.CompanyList();
+                var companies = await _companyService.CompanyList(userId);
                 return Json(ApiResponseDto.SuccessResponse(companies));
             }
             catch (Exception ex)

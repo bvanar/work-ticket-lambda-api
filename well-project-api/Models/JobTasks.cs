@@ -14,5 +14,6 @@ namespace well_project_api.Models
         public bool Completed { get; set; }
         public DateTime? CompletedDate { get; set; } = null;
         public bool IsDeleted { get; set; }
+        public int? CompletedByUserId { get; set; }
     }
 }

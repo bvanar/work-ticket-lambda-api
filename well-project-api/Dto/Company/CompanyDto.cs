@@ -9,5 +9,6 @@ namespace well_project_api.Dto.Company
     {
         public int CompanyId { get; set; }
         public string CompanyName { get; set; }
+        public int OwnerId { get; set; }
     }
 }

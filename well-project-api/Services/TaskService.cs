@@ -13,10 +13,12 @@ namespace well_project_api.Services
     {
         private readonly WellDbContext _db;
         private readonly IMapper _mapper;
-        public TaskService(WellDbContext db, IMapper mapper)
+        private readonly UserService _userService;
+        public TaskService(WellDbContext db, IMapper mapper, UserService userService)
         {
             _db = db;
             _mapper = mapper;
+            _userService = userService;
         }
 
         public async Task<List<TaskDto>> GetTasksByJobId(int jobId)
@@ -26,6 +28,14 @@ namespace well_project_api.Services
             if (tasks.Count == 0)
             {
                 throw new Exception($"The selected job (id: {jobId}) has no tasks associatied.");
+            }
+
+            var mappedTasks = _mapper.Map<List<TaskDto>>(tasks);
+            foreach(var task in mappedTasks)
+            {
+                if (task.CompletedByUserId == null) continue;
+                var user = await _userService.GetUser((int)task.CompletedByUserId);
+                task.CompletedByUserName = user.UserName;
             }
 
             return _mapper.Map<List<TaskDto>>(tasks);
@@ -69,24 +79,37 @@ namespace well_project_api.Services
             await _db.SaveChangesAsync();
         }
 
-        public async Task<TaskDto> CompleteTask(int taskId, bool isComplete)
+        public async Task<TaskDto> CompleteTask(CompleteTaskDto task)
         {
-            var task = await GetTask(taskId);
-            task.Completed = isComplete;            
+            var taskFromDb = await GetTask(task.TaskId);
+            taskFromDb.Completed = task.Completed;            
 
-            if (isComplete == true)
+            if (task.Completed == true)
             {
-                task.CompletedDate = DateTime.UtcNow;
+                taskFromDb.CompletedDate = DateTime.UtcNow;
+                taskFromDb.CompletedByUserId = task.CompletedByUserId;
             }
             else
             {
-                task.CompletedDate = null;
+                taskFromDb.CompletedDate = null;
+                taskFromDb.CompletedByUserId = null;
             }
 
-            var completedTask = (_db.Update(task)).Entity;
+            var completedTask = (_db.Update(taskFromDb)).Entity;
+
+            
+
             await _db.SaveChangesAsync();
 
-            return _mapper.Map<TaskDto>(completedTask);
+            var mappedTask = _mapper.Map<TaskDto>(completedTask);
+
+            if (mappedTask.CompletedByUserId != null)
+            {
+                var user = await _userService.GetUser((int)mappedTask.CompletedByUserId);
+                mappedTask.CompletedByUserName = user.UserName;
+            }
+
+            return mappedTask;
         }
 
         private async Task<JobTasks> GetTask(int taskId)

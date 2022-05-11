@@ -11,5 +11,6 @@ namespace well_project_api.Models
         public string JobName { get; set; }
         public int CompanyId { get; set; }
         public bool IsDeleted { get; set; }
+        public int OwnerId { get; set; }
     }
 }

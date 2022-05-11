@@ -76,12 +76,12 @@ namespace well_project_api.Controllers
         }
 
         [HttpPatch]
-        [Route("complete/{taskId}/{isComplete}")]
-        public async Task<JsonResult> CompleteTask(int taskId, bool isComplete)
+        [Route("complete")]
+        public async Task<JsonResult> CompleteTask(CompleteTaskDto task)
         {
             try
             {
-                var completedTask = await _taskService.CompleteTask(taskId, isComplete);
+                var completedTask = await _taskService.CompleteTask(task);
                 return Json(ApiResponseDto.SuccessResponse(completedTask));
             }
             catch (Exception ex)

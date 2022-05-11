@@ -15,9 +15,11 @@ namespace well_project_api
         public MappingProfile()
         {
             CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<User, RegisterUserDto>().ReverseMap();
             CreateMap<Company, CompanyDto>().ReverseMap();
             CreateMap<Job, JobDto>().ReverseMap();
             CreateMap<JobTasks, TaskDto>().ReverseMap();
+            CreateMap<UserJob, UserJobRequestDto>().ReverseMap();
         }
     }
 }

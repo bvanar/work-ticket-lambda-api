@@ -15,6 +15,7 @@ namespace well_project_api.Models
         public DbSet<Permissions> Permissions { get; set; }
         public DbSet<UserPermissions> UserPermissions { get; set; }
         public DbSet<UserJob> UserJob { get; set; }
+        public DbSet<UserCompany> UserCompany { get; set; }
 
 
         public WellDbContext(DbContextOptions<WellDbContext> options) : base(options)
@@ -31,6 +32,7 @@ namespace well_project_api.Models
             modelBuilder.Entity<Permissions>().ToTable("Permissions");
             modelBuilder.Entity<UserPermissions>().ToTable("UserPermissions");
             modelBuilder.Entity<UserJob>().ToTable("UserJob");
+            modelBuilder.Entity<UserCompany>().ToTable("UserCompany");
 
             // Primary Keys
             modelBuilder.Entity<User>().HasKey(u => u.UserId).HasName("UserId");
@@ -40,12 +42,12 @@ namespace well_project_api.Models
             modelBuilder.Entity<Permissions>().HasKey(u => u.PermissionId).HasName("PermissionId");
             modelBuilder.Entity<UserPermissions>().HasKey(u => u.UserPermissionId).HasName("UserPermissionId");
             modelBuilder.Entity<UserJob>().HasKey(u => u.UserJobId).HasName("UserJobId");
+            modelBuilder.Entity<UserCompany>().HasKey(u => u.UserCompanyId).HasName("UserCompanyId");
 
             // User Columns
             modelBuilder.Entity<User>().Property(u => u.UserId).HasColumnType("int").UseMySqlIdentityColumn().IsRequired();
             modelBuilder.Entity<User>().Property(u => u.UserName).HasColumnType("varchar(50)").IsRequired();
-            modelBuilder.Entity<User>().Property(u => u.Password).HasColumnType("varchar(100)").IsRequired();
-            modelBuilder.Entity<User>().Property(u => u.CompanyId).HasColumnType("int").IsRequired();
+            modelBuilder.Entity<User>().Property(u => u.Password).HasColumnType("varchar(100)").IsRequired();           
             modelBuilder.Entity<User>().Property(u => u.LastLogin).HasColumnType("datetime").IsRequired();
             modelBuilder.Entity<User>().Property(u => u.IsAdmin).HasColumnType("bit").IsRequired();
             modelBuilder.Entity<User>().Property(u => u.IsDeleted).HasColumnType("bit").IsRequired();
@@ -54,12 +56,14 @@ namespace well_project_api.Models
             modelBuilder.Entity<Company>().Property(u => u.CompanyId).HasColumnType("int").UseMySqlIdentityColumn().IsRequired();
             modelBuilder.Entity<Company>().Property(u => u.CompanyName).HasColumnType("varchar(50)").IsRequired();
             modelBuilder.Entity<Company>().Property(u => u.IsDeleted).HasColumnType("bit").IsRequired();
+            modelBuilder.Entity<Company>().Property(u => u.OwnerId).HasColumnType("int").IsRequired();
 
             // Job Columns
             modelBuilder.Entity<Job>().Property(u => u.JobId).HasColumnType("int").UseMySqlIdentityColumn().IsRequired();
             modelBuilder.Entity<Job>().Property(u => u.JobName).HasColumnType("varchar(50)").IsRequired();
             modelBuilder.Entity<Job>().Property(u => u.CompanyId).HasColumnType("int").IsRequired();
             modelBuilder.Entity<Job>().Property(u => u.IsDeleted).HasColumnType("bit").IsRequired();
+            modelBuilder.Entity<Job>().Property(u => u.OwnerId).HasColumnType("int").IsRequired();
 
             // JobTasks Columns
             modelBuilder.Entity<JobTasks>().Property(u => u.TaskId).HasColumnType("int").UseMySqlIdentityColumn().IsRequired();            
@@ -68,7 +72,7 @@ namespace well_project_api.Models
             modelBuilder.Entity<JobTasks>().Property(u => u.TaskOrder).HasColumnType("int").IsRequired();
             modelBuilder.Entity<JobTasks>().Property(u => u.Completed).HasColumnType("bit").IsRequired();
             modelBuilder.Entity<JobTasks>().Property(u => u.CompletedDate).HasColumnType("datetime");
-            modelBuilder.Entity<JobTasks>().Property(u => u.IsDeleted).HasColumnType("bit").IsRequired();
+            modelBuilder.Entity<JobTasks>().Property(u => u.IsDeleted).HasColumnType("bit").IsRequired();            
 
             // Permissions Columns
             modelBuilder.Entity<Permissions>().Property(u => u.PermissionId).HasColumnType("int").UseMySqlIdentityColumn().IsRequired();

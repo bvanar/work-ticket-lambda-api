@@ -19,9 +19,16 @@ namespace well_project_api.Services
             _mapper = mapper;
         }
 
-        public async Task<List<CompanyDto>> CompanyList()
+        public async Task<List<CompanyDto>> CompanyList(int userId)
         {
-            var companies = await _db.Company.Where(z => z.IsDeleted == false).ToListAsync();
+            var userCompanyIds = await _db.UserCompany.Where(u => u.UserId == userId).Select(x => x.CompanyId).ToListAsync();
+            var companies = await _db.Company.Where(z => userCompanyIds.Contains(z.CompanyId)).ToListAsync();
+            companies.Add(new Company
+            {
+                CompanyId = 0,
+                CompanyName = "My Created Jobs"
+            });
+
             return _mapper.Map<List<CompanyDto>>(companies);
         }
 

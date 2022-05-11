@@ -34,12 +34,12 @@ namespace well_project_api.Controllers
         }
 
         [HttpGet]
-        [Route("user-jobs/{userId}")]
-        public async Task<JsonResult> GetUserJobs(int userId)
+        [Route("user/{userId}/company/{companyId}")]
+        public async Task<JsonResult> GetUserJobs(int userId, int companyId)
         {
             try
             {
-                var jobs = await _jobService.GetUserJobs(userId);
+                var jobs = await _jobService.GetUserJobs(userId, companyId);
                 return Json(ApiResponseDto.SuccessResponse(jobs));
             }
             catch (Exception ex)
@@ -92,11 +92,11 @@ namespace well_project_api.Controllers
 
         [HttpPost]
         [Route("assign-user")]
-        public async Task<JsonResult> AssignUser(UserJobRequestDto userJob)
+        public async Task<JsonResult> AssignUser(List<UserJobRequestDto> userJobs)
         {
             try
             {
-                await _jobService.AssignUsersToJob(userJob);
+                await _jobService.AssignUsersToJob(userJobs);
                 return Json(ApiResponseDto.SuccessResponse(true));
             }
             catch (Exception ex)

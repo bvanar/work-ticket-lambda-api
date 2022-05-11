@@ -10,7 +10,6 @@ namespace well_project_api.Models
         public int UserId { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
-        public int CompanyId { get; set; }
         public DateTime LastLogin { get; set; }
         public bool IsAdmin { get; set; }
         public bool IsDeleted { get; set; }
