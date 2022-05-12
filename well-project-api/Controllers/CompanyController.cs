@@ -75,5 +75,20 @@ namespace well_project_api.Controllers
                 return Json(ApiResponseDto.FailureResponse(ex.Message));
             }
         }
+
+        [HttpDelete]
+        [Route("{companyId}/user/{userId}")]
+        public async Task<JsonResult> RemoveUser(int companyId, int userId)
+        {
+            try
+            {
+                await _companyService.RemoveUser(companyId, userId);
+                return Json(ApiResponseDto.SuccessResponse(true));
+            }
+            catch (Exception ex)
+            {
+                return Json(ApiResponseDto.FailureResponse(ex.Message));
+            }
+        }
     }
 }

@@ -176,6 +176,12 @@ namespace well_project_api.Services
                 throw new Exception("Company ID or User ID was not present");
             }
 
+            var existingUser = await _db.UserCompany.Where(z => z.UserId == userId && z.CompanyId == companyId).FirstOrDefaultAsync();
+            if (existingUser != null)
+            {
+                throw new Exception("User is already assigned to this company");
+            }
+
             await _db.UserCompany.AddAsync(new UserCompany
             {
                 UserId = userId,

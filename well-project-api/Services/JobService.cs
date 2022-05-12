@@ -68,7 +68,7 @@ namespace well_project_api.Services
             List<int> jobIds = await _db.UserJob.Where(u => u.UserId == userId).Select(z => z.JobId).ToListAsync();
             if (jobIds.Count == 0)
             {
-                throw new Exception("The User has no jobs assigned to them");
+                return new List<JobDto>();
             }
 
             var jobs = await _db.Job.Where(z => jobIds.Contains(z.JobId) && z.CompanyId == companyId && z.IsDeleted == false).ToListAsync();            
@@ -98,13 +98,16 @@ namespace well_project_api.Services
 
             _db.Update(job);            
 
-            var jobTasks = await _db.JobTasks.Where(j => j.JobId == jobId).ToListAsync();
+            var jobTasks = await _db.JobTasks.Where(j => j.JobId == jobId).ToListAsync();            
 
             // need to delete all tasks as well
             foreach (JobTasks task in jobTasks)
             {
                 task.IsDeleted = true;
             }
+
+            var userXjobs = await _db.UserJob.Where(j => j.JobId == jobId).ToListAsync();
+            _db.RemoveRange(userXjobs);
 
             _db.UpdateRange(jobTasks);
             await _db.SaveChangesAsync();

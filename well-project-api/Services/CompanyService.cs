@@ -51,6 +51,17 @@ namespace well_project_api.Services
             await _db.SaveChangesAsync();
         }
 
+        public async Task RemoveUser(int companyId, int userId)
+        {
+            var userXCompany = await _db.UserCompany.Where(z => z.UserId == userId && z.CompanyId == companyId).FirstOrDefaultAsync();
+            if (userXCompany == null)
+            {
+                throw new Exception("User is not assigned to this company");
+            }
+            _db.Remove(userXCompany);
+            await _db.SaveChangesAsync();
+        }
+
         public async Task<CompanyDto> AddCompany(CompanyDto company)
         {
             await ValidateCompanyName(company.CompanyName);
